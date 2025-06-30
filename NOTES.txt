@@ -1,0 +1,42 @@
+////////////////////////////////////////////////////////////////////////////////
+// This document contains course notes for the course:
+// "Atari 2600 Programming with 6502 Assembly" by Gustavo Pezzi
+// https://pikuma.com/courses/learn-assembly-language-programming-atari-2600-games
+////////////////////////////////////////////////////////////////////////////////
+
+ SECTIONS:
+   #1: COURSE OVERVIEW
+   #2: NOTES
+
+
+
+  #1 | COURSE OVERVIEW:
+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+   [X]  #1: Introduction
+   [-]  #2: Hardware and Architecture
+   [-]  #3: 6502 Assembly Programming
+   [-]  #4: 6502 Instruction Set
+   [-]  #5: VCS Memory Map and the TIA
+   [-]  #6: Screen Objects
+   [-]  #7: Vertical and Horizontal Positioning
+   [-]  #8: CPU Instructions and Clock Cycles
+   [-]  #9: Controller Input
+   [-] #10: Subroutines, Stack, and Pointers
+   [-] #11: Defining our Final Project
+   [-] #12: Controlling Position and Movement
+   [-] #13: Random Numbers
+   [-] #14: Object Collision
+   [-] #15: Digits and Scoreboard
+   [-] #16: Missiles
+   [-] #17: Audio
+   [-] #18: Scanline Analasis and Debugging Tools
+   [-] #19: Conclusion and Next Steps
+
+   [X] COMPLETED / [-] NOT COMPLETED
+
+
+
+  #2 | NOTES
+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+   - ...
