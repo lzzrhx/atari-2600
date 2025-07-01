@@ -14,7 +14,7 @@
  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
    [X]  #1: Introduction
-   [-]  #2: Hardware and Architecture
+   [X]  #2: Hardware and Architecture
    [-]  #3: 6502 Assembly Programming
    [-]  #4: 6502 Instruction Set
    [-]  #5: VCS Memory Map and the TIA
@@ -39,4 +39,170 @@
 
   #2 | NOTES
  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-   - ...
+   - Atari founded in 1972
+   - Famous in the beginning for the arcade game "Pong" (1972) (and "Tank")
+   - Pong and Tank share some core similarities:
+     + Player 1 & Player 2
+     + Scoreboard
+     + Ball
+     + Playing field
+     + Collision
+   - Atari 2600 Specs:
+     + CUP: 1.19 MHz MOS 6507 8-bit Processor (Cheaper version of the 6502) with 4 registers
+     + Audio / Video: TIA Custom Chip (Television Interface Adapter)
+     + RAM: 128 bytes MOS RIOT 6532 Memory
+     + ROM (game cartridge): 4 KB
+     + Input: Two controller ports (joystick, paddle, etc.)
+     + Output: TV via RCA Connector (NTSC, PAL, SECAM)
+   - Atari 2600 models:
+     + 1977: 2600 "Heavy Sixer"
+     + 1978: 2600 "Light Sixer"
+     + 1980: 2600-A "Four-Switch"
+     + 1981: 2600 "Dark Vader"
+     + 1986: 2600 Jr.
+   - The 6502 CPU was very popular and powered (amongst others) the following decives:
+     + Apple IIe
+     + BBC Micro
+     + Commodore PET
+     + Commodore VIC-20
+     + Commodore 64
+     + Tamagotchi
+     + Atari 2600 (6507 version of the CPU)
+     + NES
+     + Bender Rodriguez
+   - 6507 was a cheaper version of the 6502 with 28-pins instead of 40
+     + A15 to A13 and other interruption lines are not accessible
+
+
+                               [6502 CPU PINOUT]
+                               -----------------
+                     VSS-----<|1              40|>-----RES(INV)
+                     RDY-----<|2              39|>-----φ2(OUT)
+                 φ1(OUT)-----<|3              38|>-----SO
+                IRQ(INV)-----<|4              37|>-----φ0(IN)
+                      NC-----<|5              36|>-----NC
+                NMI(INV)-----<|6              35|>-----NC
+                    SYNC-----<|7       M      34|>-----R/W(INV)
+                     VCC-----<|8       O      33|>-----D0
+                      A0-----<|9       S      32|>-----D1
+                      A1-----<|10             31|>-----D2
+                      A2-----<|11      6      30|>-----D3
+                      A3-----<|12      5      29|>-----D4
+                      A4-----<|13      0      28|>-----D5
+                      A5-----<|14      2      27|>-----D6
+                      A6-----<|15             26|>-----D7
+                      A7-----<|16             25|>-----A15
+                      A8-----<|17             24|>-----A14
+                      A9-----<|18             23|>-----A13
+                     A10-----<|19             22|>-----A12
+                     A11-----<|20             21|>-----VSS
+                               -----------------
+                  + A0 - A16: Address bus (16 bits)
+                  + D0 - D7:  Data bus (8 bits)
+
+
+                               [6507 CPU PINOUT]
+                               -----------------
+                     RES-----<|1              28|>-----φ2
+                     VSS-----<|2              27|>-----φ0
+                     RDY-----<|3              26|>-----R/W
+                     VCC-----<|4       M      25|>-----D0
+                      A0-----<|5       O      24|>-----D1
+                      A1-----<|6       S      23|>-----D2
+                      A2-----<|7              22|>-----D3
+                      A3-----<|8       6      21|>-----D4
+                      A4-----<|9       5      20|>-----D5
+                      A5-----<|10      0      19|>-----D6
+                      A6-----<|11      7      18|>-----D7
+                      A7-----<|12             17|>-----A12
+                      A8-----<|13             16|>-----A11
+                      A9-----<|14             15|>-----A10
+                               -----------------
+                  + A0 - A12: Address bus
+                  + D0 - D7:  Data bus (8 bits)
+
+   - Digital Binary System:
+     + Base-2 number system
+     + Binary data is stored with high / low electricity (RAM), optics (CD ROM), magnetic (HDD)
+     + The number of unique values that can be represented with n bits is 2^n
+     + Example number: 00011011
+
+       2^7  2^6  2^5  2^4  2^3  2^2  2^1  2^0
+        0    0    0    1    1    0    1    1  =  2^0 + 2^1 + 2^2 + 2^3 + 2^4  =  27
+         \ MSB: Most significant bit        \ LSB: Least significant bit
+
+   - Hexadecimal Representation:
+     + Base-16 number system (0-9 + A-F)
+     + 00011011 (binary) = 27 (base-10) = 1B (base-16)
+        /   \
+     0001    1011
+     1(10)  11(10)
+     1(16)   B(16)
+        \   /
+        1B(16)
+
+   - 6502 assembly can use base-2, base-10 or base-16:
+     + base-2       (binary): %00011011
+     + base-10     (decimal): #27
+     + base-16 (hexadecimal): $1B
+
+   - 6507:
+     + 28-pin configuration
+     + 13 address pins and 8 data pins
+     + The remaining pins are used for:
+       + Power
+       + CPU timing clock
+       + CPU reset
+       + Request bus wait states (RDY pin)
+       + Read/write commands to memory from the CPU
+     + There is no IRQ or NMI pin on the processor (different from the 6502 (NES, Apple II, etc.))
+     + The CPU ticks 1.19 million times per second (each tick is called a clock cycle)
+     + 6502 / 6507 contain seven main parts:
+       + ALU (airthmetic logic unit): Performs arithmetic operations, can load values from memory (RAM) and the accumulator for the operation and stores the result in the accumulator
+       + Six addressable registers:
+         + PC: Program Counter - Address of instruction to be executed next (in ROM)
+         + SP: Stack Pointer - Points to the address in memory at the top of the stack (in RAM)
+         + P: Processor flags - Stores the flags of what happened in the last processor instruction (N O - B D I Z C)
+         + X: General purpose (index register)
+         + Y: General purpose (index register)
+         + Accumulator: General purpose - Used with the ALU
+     + Processor status flags:
+       + n: negative
+       + o: overflow
+       + -: not in use
+       + b: break instruction
+       + d: decimal mode (binary-coded-decimal (BCD))
+       + i: irq disable
+       + z: zero
+       + c: carry
+
+  Negative numbers using two's complement:
+ -128's  64's  32's  16's   8's   4's   2's   1's
+    |     |     |     |     |     |     |     |
+    |     |     |     |     |     |     |     |
+    -     -     -     -     -     -     -     -
+    0     1     1     1     1     1     1     1  =  [7F]  =  127 
+    -     -     -     -     -     -     -     -
+    1     0     0     0     0     0     0     0  =  [80]  =  -128
+    -     -     -     -     -     -     -     -
+    1     1     1     1     1     1     1     1  =  [FF]  =  -1
+    -     -     -     -     -     -     -     -
+
+  Overflow flag (overflow to negative):
+   0 1 1 1 1 1 1 1  =  [7F]  =  127
+ + 0 0 0 0 0 0 0 1  =  [01]  =  1
+  -----------------
+ = 1 0 0 0 0 0 0 0  =  [80]  =  -128
+    \
+      \ __ SIGN BIT
+
+  Carry flag:
+   [0] 1 1 1 1 1 1 1 1  =  [FF]
+ + [0] 0 0 0 0 0 0 0 1  =  [01]
+  ---------------------
+ = [1] 0 0 0 0 0 0 0 0  =  [00]
+     \
+       \ __ CARRY FLAG
+
+
+
