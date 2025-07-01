@@ -17,7 +17,7 @@
    [X]  #1: Introduction
    [X]  #2: Hardware and Architecture
    [X]  #3: 6502 Assembly Programming
-   [-]  #4: 6502 Instruction Set
+   [X]  #4: 6502 Instruction Set
    [-]  #5: VCS Memory Map and the TIA
    [-]  #6: Screen Objects
    [-]  #7: Vertical and Horizontal Positioning
@@ -212,6 +212,9 @@
      \
        \ __ CARRY FLAG
 
+   - Adressing modes (different modes translates to different Opcodes):
+     + LDA #80 ; Immediate mode: Loads the A register with the literal decimal value 80
+     + LDA $80 ; Absolute (zero page) mode: Loads the A register with the value inside memory address $80
 
 
   #3 | 6502 INSTRUCTIONS (OPCODES):
@@ -417,3 +420,4 @@
  - NOP/BRK Instructions:
      BRK  ; force an interrupt
      NOP  ; no operation
+
