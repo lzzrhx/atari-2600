@@ -7,6 +7,7 @@
  SECTIONS:
    #1: COURSE OVERVIEW
    #2: NOTES
+   #3: 6502 INSTRUCTIONS (OPCODES)
 
 
 
@@ -15,7 +16,7 @@
 
    [X]  #1: Introduction
    [X]  #2: Hardware and Architecture
-   [-]  #3: 6502 Assembly Programming
+   [X]  #3: 6502 Assembly Programming
    [-]  #4: 6502 Instruction Set
    [-]  #5: VCS Memory Map and the TIA
    [-]  #6: Screen Objects
@@ -39,6 +40,12 @@
 
   #2 | NOTES
  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+   - Tools used in this course:
+     + DASM assembler - https://dasm-assembler.github.io/
+     + Stella emulator - https://stella-emu.github.io/
+   - Online tools:
+     + https://8bitworkshop.com/
+     + https://javatari.org/
    - Atari founded in 1972
    - Famous in the beginning for the arcade game "Pong" (1972) (and "Tank")
    - Pong and Tank share some core similarities:
@@ -149,6 +156,7 @@
    - 6507:
      + 28-pin configuration
      + 13 address pins and 8 data pins
+     + 6502 & 6507 has Little Endian architecture ()
      + The remaining pins are used for:
        + Power
        + CPU timing clock
@@ -206,3 +214,206 @@
 
 
 
+  #3 | 6502 INSTRUCTIONS (OPCODES):
+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+ - List of 6502 instructions:      
+     http://www.6502.org/tutorials/6502opcodes.html
+
+ - List of 6502 instructions (alt link):
+     http://www.6502.org/users/obelisk/6502/instructions.html
+
+ - Load and store instructions:
+     LDA  ; load the A register
+     LDX  ; load the X register
+     LDY  ; load the Y register
+
+     STA  ; store the A register
+     STX  ; store the X register
+     STY  ; store the Y register
+ 
+     ; Loading / storing modes:
+
+     ; Immediate mode:               
+     ; LDA #80    Loads the A register with the literal decimal value 80
+     
+     ; Absolute (zero-page) mode:    
+     ; LDA $80    Loads the A register with the value inside memore address $80
+     
+     ; Immediate mode:               
+     ; LDA #$80   Loads the A register with the literal hexadecimal number $80
+     
+     ; Absolute (zero-page) indexed: 
+     ; STA $80,X  Store the value of A into memory address ($80 + X)
+
+     ; Loading sets Zero flag if the loaded number is zero
+     ; and Negative flag if the loaded number is negative (the leftmost bit is set)
+
+ - Arithmetic instructions (addition, subtract):
+     ADC  ; add to the accumulator (with carry)
+     SBC  ; subtract from the accumulator (with carry)
+
+     CLC  ; clear the carry flag (usually performed before addition)
+     SEC  ; sets the carry flag (usually performed before subtraction)
+ 
+ - Increment and Decrement instructions:
+     INC  ; increment memory by one
+     INX  ; increment X by one
+     INY  ; increment Y by one
+ 
+     DEC  ; decrement memory by one
+     DEX  ; decrement X by one
+     DEY  ; decrement Y by one
+
+     ; Flag Z=1 if the result is zero, 0 otherwise
+     ; Flag N=1 if bit 7(sign bit) is 1, 0 otherwise
+     ; Note: The accumulator has no increment instruction. Use CLC and ADC #1 instead.
+
+ - Logical Instructions:
+     AND  ; logical AND
+     EOR  ; exclusive OR
+     ORA  ; logical inclusive OR
+     BIT  ; bit test
+
+     ; AND: The result of a logical AND is only true if both inputs are true.
+     ;      A bitwise AND can be used to mask certain bits of a byte.
+     ; EOR: An Exclusive-OR is similar to logical OR, with the exception that
+     ;     it is false when both inputs are true.
+     ; ORA: The result of a logical OR (ORA) is true if at least
+     ;      one of the inputs are true.
+
+     ; AND can be used to mask bits
+     ; Example:
+     ; STA #%00001111
+     ; AND #%01010101
+     ; The result is 00000101
+
+     ; AND can also be used to check for even/odd numbers, and to check
+     ; if a number is divisible by 2/4/8/16/32/64
+     ; Examples:
+     ; AND #%00000001 - Can be used to mask all but the rightmost bit, if the
+     ; result is true it means the original number is an
+     ; even number and divisible by two.
+     ; AND #%00000011 - Can be used to mask all but the two rightmost bits, if the
+     ; result is true it means the original number is divisible by four.
+     ; AND #%00000111 - If the result is true the original number is 
+     ; divisible by eight
+     ; AND #%00001111 - Divisible by 16
+     ; et cetera...
+
+     ; EOR can be used to flip bits
+     ; Example:
+     ; STA #%00000110
+     ; EOR #%00000011
+     ; The result is 00000101
+
+     ; ORA can be used to set a particular bit to true
+     ; Example:
+     ; STA #%00011100
+     ; ORA #%00000111
+     ; The result is 00011111
+
+     ; ORA + EOR can be used to set a partical bit to false
+     ; Example:
+     ; STA #%11101011
+     ; ORA #%00111100
+     ; EOR #%00111100
+     ; The result is 11000011
+
+ - Jump, Branch, Compare Instructions:
+     JMP  ; jump to another location     GOTO
+
+     BCC  ; branch on carry clear        C == 0
+     BCS  ; branch on carry set          C == 1
+     BEQ  ; branch on equal to zero      Z == 1
+     BNE  ; branch on not equal to zero  Z == 0
+     BMI  ; branch on minus              N == 1
+     BPL  ; branch on plus               N == 0
+     BVC  ; branch on overflow clear     V == 0
+     BVS  ; branch on overflow set       V == 1
+     
+     CMP  ; compare accumulator
+     CPX  ; compare X register
+     CPY  ; compare Y register
+
+     ; Relative vs. Absolute Jumps:
+     ; JMP is an absolute jump and can jump to anywhere.
+     ; Branching (BEQ, BMI, BCS, etc.) is a relative jump that uses a byte 
+     ; to define the relative target position.
+     ; It can maximum jump 127 lines up or down.
+     ; To use branch instructions with absolute jump we'll nest a JMP
+     ; instruction inside a branch.
+     ; Example, here's the original code:
+     ;   BNE JumpDestination
+     ; To replace it with an absolute jump we'll change it to:
+     ;   BEQ :+
+     ;     JMP JumpDestination
+     ;   :
+
+     ; The CMP instruction is used to compare a value from memory with the one 
+     ; in the accumulator. It sets the N(egative), Z(ero) and C(arry) flags
+     ; depending on the result of the comparison:
+     ; 
+     ;   CMP Value:    N Z C
+     ;   If A < Value  - 0 0
+     ;   If A = Value  0 1 1
+     ;   If A > Value  - 0 1
+
+ - Shift and Rotate Instructions:
+     ASL  ; arithmetic shift left
+     LSR  ; logical shift right
+     ROL  ; rotate left
+     ROR  ; rotate right
+
+     ; LSR: Logical Shift Right, moves all bits one step to the right.
+     ;      Inserting a 0 in the leftmost bit and moving the rightmost bit
+     ;      to the carry flag.
+     ;      1 0 1 0 1 1 1 1 -> [1] 0 1 0 1 0 1 1 1
+     ; ASL: Logical Shift Left, same as LSR but moving bits one step to the left.
+     ;      Inserting a 0 in the rightmost bit and moving the leftmost bit
+     ;      to the carry flag.
+     ;      1 0 1 0 1 1 1 1 -> [1] 0 1 0 1 1 1 1 0
+     ; ROR: Rotate Right, moves all the bits one step right.
+     ;      The rightmost bit moves over to the leftmost side.
+     ;      1 0 1 0 1 1 1 1 -> 1 1 0 1 0 1 1 1
+     ; ROL: Rotate Left, moves all the bits one step left.
+     ;      The leftmost bit moves over to the rightmost side.
+     ;      1 0 1 0 1 1 1 1 -> 0 1 0 1 1 1 1 1
+
+     ; Multiplication and division by 2,4,6,8,16 etc. can by done with bit shifting
+     ; (ASL) Shifting left is equivalent to multiplying by 2.
+     ; Example: (27) 00011011 * 2 = (54) 00110110
+     ; (LSR) Shifting right is equivalent to dividing by 2.
+     ; Example: (74) 01001010 / 2 = (37) 00100101
+
+ - Transfer Instructions:
+     TAX  ; transfer A to X
+     TAY  ; transfer A to Y
+     TXA  ; transfer X to A
+     TYA  ; transfer Y to A
+
+ - Stack Instructions:
+     TSX  ; transfer stack pointer to X
+     TXS  ; transfer X to stack pointer
+     PHA  ; push accumulator on stack
+     PHP  ; push processor status on stack
+     PLA  ; pull accumulator from stack
+     PLP  ; pull processor status from stack
+
+ - Subroutine Instructions:
+     JSR  ; jump to a subroutine
+     RTS  ; return from a subroutine
+
+ - Set/Reset Instructions:
+     CLD  ; clear decimal mode flag
+     CLI  ; clear interrupt disable flag
+     CLV  ; clear overflow flag 
+     SEI  ; set interrupt disable flag
+     RTI  ; return from interrupt
+
+     ; It is customary to add a CLD (clear decimal mode flag) instruction
+     ; during initialization since the NES does not support the decimal flag.
+
+ - NOP/BRK Instructions:
+     BRK  ; force an interrupt
+     NOP  ; no operation
