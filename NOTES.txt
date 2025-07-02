@@ -18,7 +18,7 @@
    [X]  #2: Hardware and Architecture
    [X]  #3: 6502 Assembly Programming
    [X]  #4: 6502 Instruction Set
-   [-]  #5: VCS Memory Map and the TIA
+   [X]  #5: VCS Memory Map and the TIA
    [-]  #6: Screen Objects
    [-]  #7: Vertical and Horizontal Positioning
    [-]  #8: CPU Instructions and Clock Cycles
