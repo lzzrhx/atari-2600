@@ -19,7 +19,7 @@
    [X]  #3: 6502 Assembly Programming
    [X]  #4: 6502 Instruction Set
    [X]  #5: VCS Memory Map and the TIA
-   [-]  #6: Screen Objects
+   [X]  #6: Screen Objects
    [-]  #7: Vertical and Horizontal Positioning
    [-]  #8: CPU Instructions and Clock Cycles
    [-]  #9: Controller Input
@@ -216,6 +216,14 @@
      + LDA #80 ; Immediate mode: Loads the A register with the literal decimal value 80
      + LDA $80 ; Absolute (zero page) mode: Loads the A register with the value inside memory address $80
 
+   - TIA screen objects:
+     + Background
+     + Playfield
+     + Player0
+     + Player1
+     + Missile0
+     + Missile1
+     + Ball
 
   #3 | 6502 INSTRUCTIONS (OPCODES):
  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
