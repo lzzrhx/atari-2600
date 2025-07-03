@@ -21,7 +21,7 @@
    [X]  #5: VCS Memory Map and the TIA
    [X]  #6: Screen Objects
    [X]  #7: Vertical and Horizontal Positioning
-   [-]  #8: CPU Instructions and Clock Cycles
+   [X]  #8: CPU Instructions and Clock Cycles
    [-]  #9: Controller Input
    [-] #10: Subroutines, Stack, and Pointers
    [-] #11: Defining our Final Project
