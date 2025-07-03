@@ -23,7 +23,7 @@
    [X]  #7: Vertical and Horizontal Positioning
    [X]  #8: CPU Instructions and Clock Cycles
    [X]  #9: Controller Input
-   [-] #10: Subroutines, Stack, and Pointers
+   [X] #10: Subroutines, Stack, and Pointers
    [-] #11: Defining our Final Project
    [-] #12: Controlling Position and Movement
    [-] #13: Random Numbers
