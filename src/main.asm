@@ -25,6 +25,7 @@ JetColorPtr     word        ; Pointer to player0 color lookup table
 BomberSpritePtr word        ; Pointer to player1 sprite lookup table
 BomberColorPtr  word        ; Pointer to player1 color lookup table
 JetAnimOffset   byte        ; player0 sprite frame offset for animation
+Random          byte        ; Random number generated to set bomber X-position
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -47,6 +48,8 @@ Reset:
     sta BomberYPos          ; Set BomberYPos
     lda #54
     sta BomberXPos          ; Set BomberXPos
+    lda #%11010100
+    sta Random              ; Set Random
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -231,9 +234,7 @@ UpdateBomberPosition:
     dec BomberYPos          ; Else, decrement bomber Y-position for the next frame
     jmp .EndBomberPositionUpdate
 .ResetBomberPosition
-    lda #96
-    sta BomberYPos
-    ; TODO: Set bomber X position to random number
+    jsr GetRandomBomberPos  ; Call subroutine for random X-position
 .EndBomberPositionUpdate:   ; Fallback for the position update code
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -261,6 +262,64 @@ SetObjectXPos subroutine
     sta HMP0,Y
     sta RESP0,Y
     rts
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Subroutine to spawn the bomber at a random position
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+GetRandomBomberPos subroutine
+    lda Random              ; Load starting random seed
+    asl                     ; Arithmetic shift-left
+    eor Random              ; XOR A with Random
+    asl                     ; Arithmetic shift-left
+    eor Random              ; XOR A with Random
+    asl                     ; Arithmetic shift-left
+    asl                     ; Arithmetic shift-left
+    eor Random              ; XOR A with Random
+    asl                     ; Arithmetic shift-left
+    rol Random              ; Rotate left
+    lsr                     ; Shift right to divide by 2
+    lsr                     ; Shift right to divide by 2
+    sta BomberXPos
+    lda #30
+    ;clc                     ; Clear carry flag before addition
+    adc BomberXPos          ; Add 30 to compensate for the left green playfield
+    sta BomberXPos
+    lda #96
+    sta BomberYPos
+
+    rts
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Subroutine to generate a random bit
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;GenerateRandomBit subroutine
+;    lda Rand4 
+;    asl
+;    asl
+;    asl
+;    eor Rand4
+;    asl
+;    asl
+;    rol Rand1
+;    rol Rand2
+;    rol Rand3
+;    rol Rand4
+;    rts
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Subroutine to generate a random byte
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;GenerateRandomByte subroutine
+;    ldx #8                  ; x = 8
+;.RandomByteLoop
+;    jsr GenerateRandomBit   ; Call routine to generate random bit
+;    dex                     ; X--
+;    bne .RandomByteLoop     ; Repeat 8 times
+;    lda Randl               ; Load a with the result
+;    rts
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

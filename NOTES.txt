@@ -26,7 +26,7 @@
    [X] #10: Subroutines, Stack, and Pointers
    [X] #11: Defining our Final Project
    [X] #12: Controlling Position and Movement
-   [-] #13: Random Numbers
+   [X] #13: Random Numbers
    [-] #14: Object Collision
    [-] #15: Digits and Scoreboard
    [-] #16: Missiles

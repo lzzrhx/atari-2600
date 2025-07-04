@@ -7,8 +7,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Include required files with register mapping and macros
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    include "../incl/vcs.h"
-    include "../incl/macro.h"
+    include "../../incl/vcs.h"
+    include "../../incl/macro.h"
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -16,6 +16,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     seg.u Variables
     org $80
+P0Height   byte
+P0YPos byte
 P0XPos     byte
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -29,12 +31,14 @@ Reset:
     ldx #$00       ; black background color
     stx COLUBK
 
-    ldx #$D0       ; green playfield floor color
-    stx COLUPF
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Initialize variables
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    lda #9
+    sta P0Height
+    lda #10
+    sta P0YPos
     lda #10
     sta P0XPos
 
@@ -94,39 +98,40 @@ DivideLoop:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Draw the 192 visible scanlines
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    REPEAT 160
-        sta WSYNC  ; wait for 160 empty scanlines
-    REPEND
-
-    ldy #17         ; counter to draw 17 rows of player0 bitmap
-DrawBitmap:
-    lda P0Bitmap,Y ; load player bitmap slice of data
-    sta GRP0       ; set graphics for player 0 slice
-
-    lda P0Color,Y  ; load player color from lookup table
-    sta COLUP0     ; set color for player 0 slice
-
-    sta WSYNC      ; wait for next scanline
-
-    dey
-    bne DrawBitmap ; repeat next scanline until finished
-
+    ldx #192
+Scanline:
+    txa
+    sec
+    sbc P0YPos
+    cmp P0Height
+    bcc LoadBitmap
     lda #0
-    sta GRP0       ; disable P0 bitmap graphics
+LoadBitmap:
+    tay
+    lda P0Bitmap,Y
+    sta WSYNC
+    sta GRP0
+    lda P0Color,Y
+    sta COLUP0
+    dex
+    bne Scanline
 
-    lda #$FF       ; enable grass playfield
-    sta PF0
-    sta PF1
-    sta PF2
-
-    REPEAT 15
-        sta WSYNC  ; wait for remaining 15 empty scanlines
-    REPEND
-
-    lda #0         ; disable grass playfield
-    sta PF0
-    sta PF1
-    sta PF2
+;    REPEAT 60
+;        sta WSYNC
+;    REPEND
+;DrawBitmap:
+;    lda P0Bitmap,Y
+;    GRP0
+;    lda P0Color,Y
+;    sta COLUP0
+;    sta WSYNC
+;    dey
+;    bne DrawBitmap
+;    lda #0
+;    sta GRP0
+;    REPEAT 124
+;        sta WSYNC
+;    REPEND
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -141,33 +146,27 @@ Overscan:
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Joystick input for Player 0 (P0)
+;; Decrement X and Y coordinates in each frame
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-CheckP0Up:
-    lda #%00010000  ; Up
-    bit SWCHA
-    bne CheckP0Down
+    lda P0XPos
+    cmp #120
+    bpl ResetXPos
+    jmp IncXPos
+ResetXPos:
+    lda #10
+    sta P0XPos
+IncXPos:
     inc P0XPos
 
-CheckP0Down:
-    lda #%00100000  ; Down
-    bit SWCHA
-    bne CheckP0Left
-    dec P0XPos
-
-CheckP0Left:
-    lda #%01000000  ; Left
-    bit SWCHA
-    bne CheckP0Right
-    dec P0XPos
-
-CheckP0Right:
-    lda #%10000000  ; Right
-    bit SWCHA
-    bne NoInput
-    inc P0XPos
-
-NoInput:
+    lda P0YPos
+    cmp #120
+    bpl ResetYPos
+    jmp IncYPos
+ResetYPos:
+    lda #10
+    sta P0YPos
+IncYPos:
+    inc P0YPos
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -179,7 +178,7 @@ NoInput:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Lookup table for the player graphics bitmap
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-BalloonBitmap:
+P0Bitmap:
     byte #%00000000
     byte #%00101000
     byte #%01110100
@@ -194,7 +193,7 @@ BalloonBitmap:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Lookup table for the player colors
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-BalloonColor:
+P0Color:
     byte #$00
     byte #$40
     byte #$40
@@ -209,7 +208,7 @@ BalloonColor:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Lookup table for the player graphics bitmap.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-AppleBitmap:
+P1Bitmap:
     byte #%00000000
     byte #%00010000
     byte #%00001000
@@ -223,7 +222,7 @@ AppleBitmap:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Lookup table for the player colors.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-AppleColor:
+P1Color:
     byte #$00
     byte #$02
     byte #$02
@@ -233,50 +232,6 @@ AppleColor:
     byte #$52
     byte #$52
     byte #$52
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Lookup table for the player graphics bitmap
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-P0Bitmap:
-    byte #%00000000
-    byte #%00010100
-    byte #%00010100
-    byte #%00010100
-    byte #%00010100
-    byte #%00010100
-    byte #%00011100
-    byte #%01011101
-    byte #%01011101
-    byte #%01011101
-    byte #%01011101
-    byte #%01111111
-    byte #%00111110
-    byte #%00010000
-    byte #%00011100
-    byte #%00011100
-    byte #%00011100
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Lookup table for the player colors
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-P0Color:
-    byte #$00
-    byte #$F6
-    byte #$F2
-    byte #$F2
-    byte #$F2
-    byte #$F2
-    byte #$F2
-    byte #$C2
-    byte #$C2
-    byte #$C2
-    byte #$C2
-    byte #$C2
-    byte #$C2
-    byte #$3E
-    byte #$3E
-    byte #$3E
-    byte #$24
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
