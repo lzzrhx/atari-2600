@@ -27,7 +27,7 @@
    [X] #11: Defining our Final Project
    [X] #12: Controlling Position and Movement
    [X] #13: Random Numbers
-   [-] #14: Object Collision
+   [X] #14: Object Collision
    [-] #15: Digits and Scoreboard
    [-] #16: Missiles
    [-] #17: Audio

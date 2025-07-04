@@ -119,7 +119,22 @@ StartFrame:
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Draw the 96 visible scanlines (2-line kernel)
+;; Display the scoreboard lines
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    lda #0                  ; Clear TIA registers
+    sta PF0
+    sta PF1
+    sta PF2
+    sta GRP0
+    sta GRP1
+    sta COLUPF
+    REPEAT 20
+        sta WSYNC
+    REPEND
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Draw the 84 visible scanlines (2-line kernel)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 GameVisibleLines:
     lda #$84
@@ -134,7 +149,7 @@ GameVisibleLines:
    sta PF1                 ; Set PF1 bit pattern
     lda #%00000000
     sta PF2                 ; Set PF2 bit pattern
-    ldx #96                 ; X counts the number of remaining scanlines
+    ldx #84                 ; X counts the number of remaining scanlines
 
 .GameLineLoop:
 
@@ -224,6 +239,27 @@ EndInput:
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Check for object collision
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+CheckCollisionP0P1:
+    lda #%10000000          ; Bit 7 detects P0 and P1 collision
+    bit CXPPMM              ; Check CXPPMM register bit 7
+    bne .CollisionP0P1      ; If collision P0 / P1 happened, game over
+    jmp CheckCollisionP0PF  ; Else, skip to next check
+.CollisionP0P1:
+    jsr GameOver            ; Call gameover subroutine on collision
+CheckCollisionP0PF:
+    lda #%10000000          ; Bit 7 detects P0 and PF collision
+    bit CXP0FB              ; Check CXP0FB register bit 7
+    bne .CollisionP0PF      ; If collision P0 / PF happened, game over
+    jmp EndCollisionCheck   ; Else, end collision check
+.CollisionP0PF:
+    jsr GameOver            ; Call gameover subroutine on collision
+EndCollisionCheck:
+    sta CXCLR               ; Clear all collision flags before the next frame
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Calculations to update position for next frame
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 UpdateBomberPosition:
@@ -265,6 +301,15 @@ SetObjectXPos subroutine
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Game Over subroutine
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+GameOver subroutine
+    lda #$30
+    sta COLUBK
+    rts
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Subroutine to spawn the bomber at a random position
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 GetRandomBomberPos subroutine
@@ -287,39 +332,7 @@ GetRandomBomberPos subroutine
     sta BomberXPos
     lda #96
     sta BomberYPos
-
     rts
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Subroutine to generate a random bit
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;GenerateRandomBit subroutine
-;    lda Rand4 
-;    asl
-;    asl
-;    asl
-;    eor Rand4
-;    asl
-;    asl
-;    rol Rand1
-;    rol Rand2
-;    rol Rand3
-;    rol Rand4
-;    rts
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Subroutine to generate a random byte
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;GenerateRandomByte subroutine
-;    ldx #8                  ; x = 8
-;.RandomByteLoop
-;    jsr GenerateRandomBit   ; Call routine to generate random bit
-;    dex                     ; X--
-;    bne .RandomByteLoop     ; Repeat 8 times
-;    lda Randl               ; Load a with the result
-;    rts
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
