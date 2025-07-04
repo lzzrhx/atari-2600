@@ -24,7 +24,7 @@
    [X]  #8: CPU Instructions and Clock Cycles
    [X]  #9: Controller Input
    [X] #10: Subroutines, Stack, and Pointers
-   [-] #11: Defining our Final Project
+   [X] #11: Defining our Final Project
    [-] #12: Controlling Position and Movement
    [-] #13: Random Numbers
    [-] #14: Object Collision
@@ -41,11 +41,12 @@
   #2 | NOTES
  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
    - Tools used in this course:
-     + DASM assembler - https://dasm-assembler.github.io/
+     + DASM assembler  - https://dasm-assembler.github.io/
      + Stella emulator - https://stella-emu.github.io/
    - Online tools:
-     + https://8bitworkshop.com/
-     + https://javatari.org/
+     + playerpal2600   - https://alienbill.com/2600/playerpalnext.html
+     + 8bitworkshop    - https://8bitworkshop.com/
+     + javatari        - https://javatari.org/
    - Atari founded in 1972
    - Famous in the beginning for the arcade game "Pong" (1972) (and "Tank")
    - Pong and Tank share some core similarities:
