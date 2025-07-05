@@ -28,7 +28,7 @@
    [X] #12: Controlling Position and Movement
    [X] #13: Random Numbers
    [X] #14: Object Collision
-   [-] #15: Digits and Scoreboard
+   [X] #15: Digits and Scoreboard
    [-] #16: Missiles
    [-] #17: Audio
    [-] #18: Scanline Analasis and Debugging Tools
@@ -225,6 +225,8 @@
      + Missile0
      + Missile1
      + Ball
+   
+   - Score and display timer: https://www.randomterrain.com/atari-2600-lets-make-a-game-spiceware-03.html
 
   #3 | 6502 INSTRUCTIONS (OPCODES):
  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
