@@ -31,7 +31,7 @@
    [X] #15: Digits and Scoreboard
    [X] #16: Missiles
    [X] #17: Audio
-   [-] #18: Scanline Analasis and Debugging Tools
+   [X] #18: Scanline Analasis and Debugging Tools
    [-] #19: Conclusion and Next Steps
 
    [X] COMPLETED / [-] NOT COMPLETED

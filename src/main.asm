@@ -149,7 +149,7 @@ StartFrame:
     REPEND
     lda #0
     sta VSYNC                   ; Turn VSYNC off
-    REPEAT 32
+    REPEAT 31
         sta WSYNC               ; VBLANK lines
     REPEND
 
@@ -192,7 +192,7 @@ NotSecond:
 ;; Reset Missile
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
    lda MissileYPos
-   cmp #86
+   cmp #90
    bcc SkipMissileReset
    lda #0
    sta MissileYPos
@@ -279,7 +279,7 @@ SkipMissileReset:
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Draw the 84 visible scanlines (2-line kernel)
+;; Draw the 89 visible scanlines (2-line kernel)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 GameVisibleLines:
     lda TerrainColor
@@ -294,7 +294,7 @@ GameVisibleLines:
     sta PF1                     ; Set PF1 bit pattern
     lda #%00000000
     sta PF2                     ; Set PF2 bit pattern
-    ldx #85                     ; X counts the number of remaining scanlines
+    ldx #89                     ; X counts the number of remaining scanlines
 .GameLineLoop:
     DRAW_MISSILE                ; Macro to check if missile should be drawn
 .InsideJetSprite:
