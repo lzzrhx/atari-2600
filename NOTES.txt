@@ -32,7 +32,7 @@
    [X] #16: Missiles
    [X] #17: Audio
    [X] #18: Scanline Analasis and Debugging Tools
-   [-] #19: Conclusion and Next Steps
+   [X] #19: Conclusion and Next Steps
 
    [X] COMPLETED / [-] NOT COMPLETED
 
@@ -47,6 +47,10 @@
      + playerpal2600   - https://alienbill.com/2600/playerpalnext.html
      + 8bitworkshop    - https://8bitworkshop.com/
      + javatari        - https://javatari.org/
+   - Additional resources:
+     + Stella community / manual
+     + AtariAge forum: https://forums.atariage.com/
+     + Open source games
    - Atari founded in 1972
    - Famous in the beginning for the arcade game "Pong" (1972) (and "Tank")
    - Pong and Tank share some core similarities:
