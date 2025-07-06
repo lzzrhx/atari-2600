@@ -29,7 +29,7 @@
    [X] #13: Random Numbers
    [X] #14: Object Collision
    [X] #15: Digits and Scoreboard
-   [-] #16: Missiles
+   [X] #16: Missiles
    [-] #17: Audio
    [-] #18: Scanline Analasis and Debugging Tools
    [-] #19: Conclusion and Next Steps
