@@ -92,10 +92,16 @@ Reset:
 ;; Declare a MACRO to check if missile 0 should be displayed
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     MAC DRAW_MISSILE
-        lda #%00000000
+        lda #0
         cpx MissileYPos
         bne .SkipMissileDraw
 .DrawMissile
+        lda #2
+        sta AUDV1
+        lda #10
+        sta AUDF0
+        lda #8
+        sta AUDC0
         lda #%00000010          ; Else: Enable missile 0 display
         inc MissileYPos
 .SkipMissileDraw:
@@ -207,6 +213,7 @@ SkipMissileReset:
     ldy #2
     jsr SetObjectXPos
     jsr CalculateDigitOffset    ; Calulcate the scoreboard digit lookup table offset 
+    jsr GenerateJetSound
     sta WSYNC
     sta HMOVE                   ; Apply the previously set horizontal offsets
     lda #0
@@ -572,6 +579,27 @@ CalculateDigitOffset subroutine
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Sleep12Cycles subroutine
     rts
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Generate audio for the jet engine sound based on the jet y position
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+GenerateJetSound subroutine
+    lda #2
+    sta AUDV0
+    lda JetYPos
+    lsr
+    ;lsr
+    ;lsr
+    sta Temp
+    lda #31
+    sec
+    sbc Temp
+    sta AUDF0
+    lda #8
+    sta AUDC0
+    rts
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Declare ROM lookup tables

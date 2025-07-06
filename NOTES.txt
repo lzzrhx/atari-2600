@@ -30,7 +30,7 @@
    [X] #14: Object Collision
    [X] #15: Digits and Scoreboard
    [X] #16: Missiles
-   [-] #17: Audio
+   [X] #17: Audio
    [-] #18: Scanline Analasis and Debugging Tools
    [-] #19: Conclusion and Next Steps
 
