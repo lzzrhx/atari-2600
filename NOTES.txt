@@ -51,6 +51,7 @@
      + Stella community / manual
      + AtariAge forum: https://forums.atariage.com/
      + Open source games
+     + How Pitfall Builds its World: https://evoniuk.github.io/posts/pitfall.html
    - Atari founded in 1972
    - Famous in the beginning for the arcade game "Pong" (1972) (and "Tank")
    - Pong and Tank share some core similarities:
